@@ -1,17 +1,17 @@
 # Progress
 
 ## What works
-- Memory Bankの初期化
-- 基本ドキュメントの作成
+- Memory Bank initialization
+- Basic documentation creation
 
 ## What's left to build
-- コア機能の実装
-- UI開発
-- LLM統合
-- ユーザー認証システム
-- 議論管理機能
+- Core feature implementation
+- UI development
+- LLM integration
+- User authentication system
+- Discussion management features
 
 ## Progress status
-- 初期セットアップ: 完了
-- ドキュメント作成: 80%完了
-- 機能開発: 未着手
+- Initial setup: Completed
+- Documentation: 80% completed
+- Feature development: Not started

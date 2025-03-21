@@ -1,10 +1,10 @@
 # System Patterns
 
 ## How the system is built
-- クリーンアーキテクチャに基づいて構築
+- Built based on Clean Architecture
 
 ## Key technical decisions
-- Next.jsを採用
+- Adopted Next.js
 
 ## Architecture patterns
-- クリーンアーキテクチャ
+- Clean Architecture

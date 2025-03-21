@@ -7,11 +7,11 @@
 - Tailwind CSS
 
 ## Development setup
-1. Node.jsをインストール
-2. プロジェクトディレクトリで`npm install`を実行
-3. `npm run dev`で開発サーバーを起動
+1. Install Node.js
+2. Run `npm install` in project directory
+3. Start development server with `npm run dev`
 
 ## Technical constraints
-- Next.jsの最新バージョンを使用
-- TypeScriptを必須とする
-- レスポンシブデザインをサポート
+- Use latest version of Next.js
+- TypeScript is mandatory
+- Support responsive design

@@ -1,14 +1,14 @@
 # Product Context
 
 ## Why this project exists
-- 様々な観点を手に入れること
-- 世の中で本質的に価値のある議論を増やすこと
+- To gain diverse perspectives
+- To increase truly valuable discussions in the world
 
-## What problems it solves  
-- 時間が有限であること
-- 議論ができない人が多いこと  
-- 本質的でない指摘やポジショントークによる時間の浪費
+## What problems it solves
+- Limited time availability
+- Many people lack debate skills
+- Time wasted on non-essential critiques and position-based arguments
 
 ## How it should work
-- 中心人物: 議論の概要と想定質問への回答を入力
-- 大衆: LLMと議論可能
+- Central figure: Inputs discussion overview and anticipated Q&A
+- General public: Can debate with LLM
