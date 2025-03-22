@@ -1,14 +1,13 @@
-# Product Context
+# Debate Forge - Product Context
 
-## Why this project exists
-- To gain diverse perspectives
-- To increase truly valuable discussions in the world
+## Purpose
+Debate Forge is a platform designed to facilitate structured online debates and discussions. It aims to:
+- Provide a framework for organized discourse
+- Enable users to explore multiple perspectives on complex topics
+- Foster critical thinking and knowledge sharing
 
-## What problems it solves
-- Limited time availability
-- Many people lack debate skills
-- Time wasted on non-essential critiques and position-based arguments
-
-## How it should work
-- Central figure: Inputs discussion overview and anticipated Q&A
-- General public: Can debate with LLM
+## Core Features
+- Debate organization and categorization
+- User participation and engagement tracking
+- Knowledge base integration
+- Discussion agenda management

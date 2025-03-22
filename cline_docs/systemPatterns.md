@@ -1,10 +1,17 @@
-# System Patterns
+# System Architecture and Patterns
 
-## How the system is built
-- Built based on Clean Architecture
+## Core Architecture
+- Next.js App Router architecture
+- Prisma ORM for database management
+- RESTful API design pattern
 
-## Key technical decisions
-- Adopted Next.js
+## Database Schema
+- Users table: Stores user information and credentials
+- Knowledge table: Maintains debate-related knowledge base
+- Curiosities table: Tracks user interests and questions
+- Agenda table: Manages debate structure and flow
 
-## Architecture patterns
-- Clean Architecture
+## Design Patterns
+- Repository pattern for data access
+- Dependency injection for service components
+- Observer pattern for real-time updates

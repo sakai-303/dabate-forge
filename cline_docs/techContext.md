@@ -1,17 +1,28 @@
-# Tech Context
+# Technology Context
 
-## Technologies used
-- Next.js
-- React
+## Core Technologies
+- Next.js 14 (App Router)
 - TypeScript
+- Prisma ORM
+- PostgreSQL
 - Tailwind CSS
 
-## Development setup
-1. Install Node.js
-2. Run `npm install` in project directory
-3. Start development server with `npm run dev`
+## Development Setup
+1. Node.js v18+
+2. Docker for database container
+3. Prisma CLI for migrations
+4. ESLint for code quality
+5. PostCSS for styling
 
-## Technical constraints
-- Use latest version of Next.js
-- TypeScript is mandatory
-- Support responsive design
+## Dependencies
+- @prisma/client
+- @types/node
+- @types/react
+- autoprefixer
+- eslint
+- next
+- postcss
+- react
+- react-dom
+- tailwindcss
+- typescript
