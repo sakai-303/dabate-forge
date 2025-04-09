@@ -149,3 +149,87 @@ export async function getTopicById(id: string) {
 
   return null
 }
+
+// New functions for the public discussion interface
+
+export async function getPublicTopicById(id: string) {
+  // In a real app, you would fetch this from your database
+  if (id === "1") {
+    return {
+      id: "1",
+      title: "Climate Change",
+      ownerName: "Alex Johnson",
+      ownerAvatar: "/placeholder.svg?height=48&width=48",
+    }
+  } else if (id === "2") {
+    return {
+      id: "2",
+      title: "AI Ethics",
+      ownerName: "Sam Taylor",
+      ownerAvatar: "/placeholder.svg?height=48&width=48",
+    }
+  }
+
+  return null
+}
+
+export async function getTopicForDiscussion(id: string) {
+  // In a real app, you would fetch this from your database
+  if (id === "1") {
+    return {
+      id: "1",
+      title: "Climate Change",
+      ownerName: "Alex Johnson",
+      stance: "We need immediate action to reduce carbon emissions and transition to renewable energy sources.",
+      anticipatedQuestions: [
+        {
+          question: "What about nuclear energy?",
+          response:
+            "I believe nuclear energy should be part of our transition strategy as it's low-carbon, but we need to address safety and waste concerns.",
+        },
+        {
+          question: "Is individual action enough?",
+          response:
+            "While individual actions matter, systemic change through policy is essential for meaningful impact.",
+        },
+        {
+          question: "What's your stance on carbon tax?",
+          response:
+            "I support a well-designed carbon tax that prices emissions appropriately while ensuring the burden doesn't fall disproportionately on lower-income households.",
+        },
+      ],
+    }
+  } else if (id === "2") {
+    return {
+      id: "2",
+      title: "AI Ethics",
+      ownerName: "Sam Taylor",
+      stance: "AI development should be regulated to ensure it benefits humanity and doesn't exacerbate inequality.",
+      anticipatedQuestions: [
+        {
+          question: "Should AI be regulated?",
+          response:
+            "Yes, I believe AI needs thoughtful regulation to ensure safety, fairness, and alignment with human values.",
+        },
+        {
+          question: "What about AI and jobs?",
+          response:
+            "We need policies to manage the transition, including education and social safety nets for those displaced by automation.",
+        },
+      ],
+    }
+  }
+
+  return null
+}
+
+export async function logNewPerspective(data: {
+  topicId: string
+  question: string
+  context: string
+  aiResponse: string
+}) {
+  // In a real app, you would save this to your database
+  console.log("Logging new perspective:", data)
+  return { success: true }
+}

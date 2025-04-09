@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ChatInterface } from "@/components/chat-interface"
+import { ShareTopicButton } from "@/components/share-topic-button"
 import Link from "next/link"
 import { getTopicById } from "@/lib/actions"
 
@@ -23,9 +24,12 @@ export default async function TopicPage({ params }: TopicPageProps) {
     <div className="container mx-auto py-10">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">{topic.title}</h1>
-        <Link href={`/topics/${params.id}/edit`}>
-          <Button>Edit Topic</Button>
-        </Link>
+        <div className="flex gap-2">
+          <ShareTopicButton topicId={params.id} topicTitle={topic.title} />
+          <Link href={`/topics/${params.id}/edit`}>
+            <Button>Edit Topic</Button>
+          </Link>
+        </div>
       </div>
 
       <div className="mb-6">
