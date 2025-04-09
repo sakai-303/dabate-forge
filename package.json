@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "migrate:up": "dbmate up",
+    "migrate:down": "dbmate down",
+    "migrate:new": "dbmate new"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
