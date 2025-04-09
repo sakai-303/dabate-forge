@@ -5,43 +5,41 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 export default function Home() {
   return (
     <div className="container mx-auto py-10">
-      <h1 className="text-4xl font-bold mb-6 text-center">AI Representation System</h1>
+      <h1 className="text-4xl font-bold mb-6 text-center">AI代理システム</h1>
       <p className="text-lg text-center mb-10 max-w-2xl mx-auto">
-        Train an AI to represent your views in discussions by providing stances on topics and iteratively improving
-        responses based on new perspectives.
+        トピックに対する立場を提供し、新しい視点に基づいて回答を段階的に改善することで、議論であなたの見解を代弁するAIを訓練します。
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
         <Card>
           <CardHeader>
-            <CardTitle>Create Topic</CardTitle>
-            <CardDescription>Define a new topic and your stance</CardDescription>
+            <CardTitle>トピックを作成</CardTitle>
+            <CardDescription>新しいトピックとあなたの立場を定義</CardDescription>
           </CardHeader>
           <CardContent className="h-32">
-            <p>Create a new discussion topic and provide your initial stance and responses to anticipated questions.</p>
+            <p>新しい議論トピックを作成し、最初の立場と予想される質問への回答を提供します。</p>
           </CardContent>
           <CardFooter>
             <Link href="/topics/create" className="w-full">
-              <Button className="w-full">Create New Topic</Button>
+              <Button className="w-full">新規トピックを作成</Button>
             </Link>
           </CardFooter>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>My Topics</CardTitle>
-            <CardDescription>Manage your existing topics</CardDescription>
+            <CardTitle>マイトピック</CardTitle>
+            <CardDescription>既存のトピックを管理</CardDescription>
           </CardHeader>
           <CardContent className="h-32">
             <p>
-              View and manage your existing topics, review feedback, and update your responses based on new
-              perspectives.
+              既存のトピックを表示・管理し、フィードバックを確認し、新しい視点に基づいて回答を更新します。
             </p>
           </CardContent>
           <CardFooter>
             <Link href="/topics" className="w-full">
               <Button className="w-full" variant="outline">
-                View Topics
+                トピックを表示
               </Button>
             </Link>
           </CardFooter>
@@ -49,18 +47,18 @@ export default function Home() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Pending Feedback</CardTitle>
-            <CardDescription>Review new perspectives</CardDescription>
+            <CardTitle>保留中のフィードバック</CardTitle>
+            <CardDescription>新しい視点を確認</CardDescription>
           </CardHeader>
           <CardContent className="h-32">
             <p>
-              Review new questions and perspectives that your AI representative has encountered and prepare responses.
+              AIの代理が遭遇した新しい質問や視点を確認し、回答を準備します。
             </p>
           </CardContent>
           <CardFooter>
             <Link href="/feedback" className="w-full">
               <Button className="w-full" variant="outline">
-                Review Feedback
+                フィードバックを確認
               </Button>
             </Link>
           </CardFooter>
@@ -68,16 +66,16 @@ export default function Home() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Conversation History</CardTitle>
-            <CardDescription>Review past discussions</CardDescription>
+            <CardTitle>会話履歴</CardTitle>
+            <CardDescription>過去の議論を確認</CardDescription>
           </CardHeader>
           <CardContent className="h-32">
-            <p>View the history of conversations your AI representative has had with others on your behalf.</p>
+            <p>あなたの代わりにAI代理が他者と行った会話の履歴を表示します。</p>
           </CardContent>
           <CardFooter>
             <Link href="/conversations" className="w-full">
               <Button className="w-full" variant="outline">
-                View History
+                履歴を表示
               </Button>
             </Link>
           </CardFooter>

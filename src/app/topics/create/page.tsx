@@ -49,19 +49,19 @@ export default function CreateTopic() {
 
   return (
     <div className="container mx-auto py-10 max-w-3xl">
-      <h1 className="text-3xl font-bold mb-6">Create New Topic</h1>
+      <h1 className="text-3xl font-bold mb-6">新規トピックの作成</h1>
 
       <form onSubmit={handleSubmit}>
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Topic Information</CardTitle>
+            <CardTitle>トピック情報</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="title">Topic Title</Label>
+              <Label htmlFor="title">トピックタイトル</Label>
               <Input
                 id="title"
-                placeholder="e.g., Climate Change, AI Ethics, etc."
+                placeholder="例：気候変動、AI倫理など"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
@@ -69,10 +69,10 @@ export default function CreateTopic() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="stance">Your Stance</Label>
+              <Label htmlFor="stance">あなたの立場</Label>
               <Textarea
                 id="stance"
-                placeholder="Describe your position on this topic in detail..."
+                placeholder="このトピックに対するあなたの立場を詳細に説明してください..."
                 className="min-h-[150px]"
                 value={stance}
                 onChange={(e) => setStance(e.target.value)}
@@ -84,13 +84,13 @@ export default function CreateTopic() {
 
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Anticipated Questions & Responses</CardTitle>
+            <CardTitle>予想される質問と回答</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             {anticipatedQuestions.map((item, index) => (
               <div key={index} className="p-4 border rounded-lg space-y-4">
                 <div className="flex justify-between items-center">
-                  <h3 className="font-medium">Question {index + 1}</h3>
+                  <h3 className="font-medium">質問 {index + 1}</h3>
                   {anticipatedQuestions.length > 1 && (
                     <Button type="button" variant="ghost" size="sm" onClick={() => removeQuestion(index)}>
                       <Trash2 className="h-4 w-4" />
@@ -99,10 +99,10 @@ export default function CreateTopic() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor={`question-${index}`}>Question</Label>
+                  <Label htmlFor={`question-${index}`}>質問</Label>
                   <Input
                     id={`question-${index}`}
-                    placeholder="What might someone ask about this topic?"
+                    placeholder="このトピックについて誰かが尋ねそうなことは？"
                     value={item.question}
                     onChange={(e) => updateQuestion(index, "question", e.target.value)}
                     required
@@ -110,10 +110,10 @@ export default function CreateTopic() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor={`response-${index}`}>Your Response</Label>
+                  <Label htmlFor={`response-${index}`}>あなたの回答</Label>
                   <Textarea
                     id={`response-${index}`}
-                    placeholder="How would you respond to this question?"
+                    placeholder="この質問にどのように回答しますか？"
                     className="min-h-[100px]"
                     value={item.response}
                     onChange={(e) => updateQuestion(index, "response", e.target.value)}
@@ -125,12 +125,12 @@ export default function CreateTopic() {
 
             <Button type="button" variant="outline" className="w-full" onClick={addQuestion}>
               <PlusCircle className="h-4 w-4 mr-2" />
-              Add Another Question
+              別の質問を追加
             </Button>
           </CardContent>
           <CardFooter>
             <Button type="submit" className="w-full">
-              Save Topic
+              トピックを保存
             </Button>
           </CardFooter>
         </Card>

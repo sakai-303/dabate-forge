@@ -19,8 +19,8 @@ export function ChatInterface({ topicId, topicTitle }: ChatInterfaceProps) {
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         <div className="bg-muted p-3 rounded-lg">
           <p className="text-sm">
-            This is a simulation of how your AI representative would discuss the topic
-            <strong> "{topicTitle}"</strong> based on your prepared stance and responses.
+            これはあなたの準備した立場と回答に基づいて、AIの代理が
+            <strong> "{topicTitle}"</strong> というトピックについてどのように議論するかのシミュレーションです。
           </p>
         </div>
 
@@ -38,7 +38,7 @@ export function ChatInterface({ topicId, topicTitle }: ChatInterfaceProps) {
 
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
-            <p>Start a conversation to see how your AI representative would respond.</p>
+            <p>会話を始めて、あなたのAI代理がどのように応答するか確認しましょう。</p>
           </div>
         )}
       </div>
@@ -48,12 +48,12 @@ export function ChatInterface({ topicId, topicTitle }: ChatInterfaceProps) {
           <Input
             value={input}
             onChange={handleInputChange}
-            placeholder="Ask a question about this topic..."
+            placeholder="このトピックについて質問してください..."
             disabled={isLoading}
             className="flex-1"
           />
           <Button type="submit" disabled={isLoading || !input.trim()}>
-            Send
+            送信
           </Button>
         </form>
       </div>

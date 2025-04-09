@@ -1,226 +1,233 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { v4 as uuidv4 } from 'uuid';
+import { 
+  User, 
+  Topic, 
+  AnticipatedQuestion, 
+  NewPerspective, 
+  Conversation 
+} from "../entity";
+import { 
+  createUser, 
+  getUsers,
+  createTopic as dbCreateTopic, 
+  getTopics as dbGetTopics,
+  getTopicById as dbGetTopicById,
+  getAnticipatedQuestionsByTopicId,
+  createAnticipatedQuestion,
+  getConversationsByTopicId,
+  getConversations as dbGetConversations,
+  getPendingNewPerspectives,
+  createNewPerspective
+} from "../repository";
 
-// These are mock functions that would connect to your database in a real application
+// 現在のユーザーIDを取得するヘルパー関数（認証実装前の仮実装）
+async function getCurrentUserId(): Promise<string> {
+  // ユーザーが存在しなければ作成する
+  const users = await getUsers();
+  if (users.length === 0) {
+    const user = new User('Default User');
+    await createUser(user);
+    return user.id;
+  }
+  return users[0].id;
+}
 
 export async function createTopic(data: {
   title: string
   stance: string
   anticipatedQuestions: { question: string; response: string }[]
 }) {
-  // In a real app, you would save this to your database
-  console.log("Creating topic:", data)
-
-  // Revalidate the topics page to show the new topic
-  revalidatePath("/topics")
-
-  return { success: true }
+  try {
+    const userId = await getCurrentUserId();
+    
+    // トピックを作成
+    const topic = new Topic(userId, data.title, data.stance);
+    await dbCreateTopic(topic);
+    
+    // 想定質問を登録
+    for (const q of data.anticipatedQuestions) {
+      const question = new AnticipatedQuestion(
+        topic.id,
+        q.question,
+        q.response
+      );
+      await createAnticipatedQuestion(question);
+    }
+    
+    // キャッシュ更新
+    revalidatePath("/topics");
+    
+    return { success: true, topicId: topic.id };
+  } catch (error) {
+    console.error("Error creating topic:", error);
+    return { success: false, error: "Failed to create topic" };
+  }
 }
 
 export async function getTopics() {
-  // In a real app, you would fetch this from your database
-  return [
-    {
-      id: "1",
-      title: "Climate Change",
-      stance: "We need immediate action to reduce carbon emissions and transition to renewable energy sources.",
-      questionCount: 5,
-      conversationCount: 3,
-      pendingFeedback: 2,
-    },
-    {
-      id: "2",
-      title: "AI Ethics",
-      stance: "AI development should be regulated to ensure it benefits humanity and doesn't exacerbate inequality.",
-      questionCount: 7,
-      conversationCount: 2,
-      pendingFeedback: 0,
-    },
-  ]
+  try {
+    const topics = await dbGetTopics();
+    
+    // トピックごとの追加情報を取得
+    const enrichedTopics = await Promise.all(topics.map(async (topic) => {
+      const anticipatedQuestions = await getAnticipatedQuestionsByTopicId(topic.id);
+      const conversations = await getConversationsByTopicId(topic.id);
+      
+      // New Perspectives（フィードバック）の数を取得
+      // 実際の実装では、statusがpendingのものだけをカウントする
+      const pendingFeedback = await getPendingNewPerspectives();
+      const topicPendingFeedback = pendingFeedback.filter(p => p.topic_id === topic.id).length;
+      
+      return {
+        id: topic.id,
+        title: topic.title,
+        stance: topic.stance,
+        questionCount: anticipatedQuestions.length,
+        conversationCount: conversations.length,
+        pendingFeedback: topicPendingFeedback,
+      };
+    }));
+    
+    return enrichedTopics;
+  } catch (error) {
+    console.error("Error fetching topics:", error);
+    return [];
+  }
 }
 
 export async function getPendingFeedback() {
-  // In a real app, you would fetch this from your database
-  return [
-    {
-      id: "1",
-      topicTitle: "Climate Change",
-      question: "What about the economic impact of rapid decarbonization?",
-      context: "The conversation was about carbon tax policies when this question came up.",
-      aiResponse: "I don't have a specific stance on the economic impacts of rapid decarbonization.",
-      date: "2023-06-15T10:30:00Z",
-    },
-    {
-      id: "2",
-      topicTitle: "Climate Change",
-      question: "How do we address climate refugees?",
-      context: "Discussion about rising sea levels led to questions about displacement.",
-      aiResponse: "I don't have a prepared response about climate refugees.",
-      date: "2023-06-14T14:45:00Z",
-    },
-  ]
+  try {
+    const pendingPerspectives = await getPendingNewPerspectives();
+    
+    // 各パースペクティブに対応するトピックのタイトルを取得
+    const enrichedPerspectives = await Promise.all(pendingPerspectives.map(async (perspective) => {
+      const topic = await dbGetTopicById(perspective.topic_id);
+      
+      return {
+        id: perspective.id,
+        topicTitle: topic ? topic.title : "Unknown Topic",
+        question: perspective.question,
+        context: perspective.context,
+        aiResponse: perspective.ai_response,
+        date: perspective.created_at.toISOString(),
+      };
+    }));
+    
+    return enrichedPerspectives;
+  } catch (error) {
+    console.error("Error fetching pending feedback:", error);
+    return [];
+  }
 }
 
 export async function getConversations() {
-  // In a real app, you would fetch this from your database
-  return [
-    {
-      id: "1",
-      topicTitle: "Climate Change",
-      participant: "John Doe",
-      date: "2023-06-10T09:15:00Z",
-      messageCount: 24,
-      summary: "Discussion about carbon tax policies and renewable energy incentives.",
-    },
-    {
-      id: "2",
-      topicTitle: "AI Ethics",
-      participant: "Jane Smith",
-      date: "2023-06-08T16:30:00Z",
-      messageCount: 18,
-      summary: "Debate about AI regulation and the role of government oversight.",
-    },
-  ]
+  try {
+    const conversations = await dbGetConversations();
+    
+    // 各会話に対応するトピックのタイトルを取得
+    const enrichedConversations = await Promise.all(conversations.map(async (conversation) => {
+      const topic = await dbGetTopicById(conversation.topic_id);
+      
+      return {
+        id: conversation.id,
+        topicTitle: topic ? topic.title : "Unknown Topic",
+        participant: conversation.participant,
+        date: conversation.created_at.toISOString(),
+        messageCount: conversation.message_count,
+        summary: conversation.summary || "No summary available",
+      };
+    }));
+    
+    return enrichedConversations;
+  } catch (error) {
+    console.error("Error fetching conversations:", error);
+    return [];
+  }
 }
 
 export async function getTopicById(id: string) {
-  // In a real app, you would fetch this from your database
-  if (id === "1") {
+  try {
+    const topic = await dbGetTopicById(id);
+    if (!topic) return null;
+    
+    // トピックに関連する想定質問を取得
+    const anticipatedQuestions = await getAnticipatedQuestionsByTopicId(id);
+    const formattedQuestions = anticipatedQuestions.map(q => ({
+      question: q.question,
+      response: q.response,
+    }));
+    
+    // トピックに関連する会話を取得
+    const conversations = await getConversationsByTopicId(id);
+    const formattedConversations = conversations.map(c => ({
+      id: c.id,
+      participant: c.participant,
+      date: c.created_at.toISOString(),
+      messageCount: c.message_count,
+      summary: c.summary || "No summary available",
+    }));
+    
     return {
-      id: "1",
-      title: "Climate Change",
-      stance: "We need immediate action to reduce carbon emissions and transition to renewable energy sources.",
-      anticipatedQuestions: [
-        {
-          question: "What about nuclear energy?",
-          response:
-            "I believe nuclear energy should be part of our transition strategy as it's low-carbon, but we need to address safety and waste concerns.",
-        },
-        {
-          question: "Is individual action enough?",
-          response:
-            "While individual actions matter, systemic change through policy is essential for meaningful impact.",
-        },
-        {
-          question: "What's your stance on carbon tax?",
-          response:
-            "I support a well-designed carbon tax that prices emissions appropriately while ensuring the burden doesn't fall disproportionately on lower-income households.",
-        },
-      ],
-      conversations: [
-        {
-          id: "1",
-          participant: "John Doe",
-          date: "2023-06-10T09:15:00Z",
-          messageCount: 24,
-          summary: "Discussion about carbon tax policies and renewable energy incentives.",
-        },
-      ],
-    }
-  } else if (id === "2") {
-    return {
-      id: "2",
-      title: "AI Ethics",
-      stance: "AI development should be regulated to ensure it benefits humanity and doesn't exacerbate inequality.",
-      anticipatedQuestions: [
-        {
-          question: "Should AI be regulated?",
-          response:
-            "Yes, I believe AI needs thoughtful regulation to ensure safety, fairness, and alignment with human values.",
-        },
-        {
-          question: "What about AI and jobs?",
-          response:
-            "We need policies to manage the transition, including education and social safety nets for those displaced by automation.",
-        },
-      ],
-      conversations: [
-        {
-          id: "2",
-          participant: "Jane Smith",
-          date: "2023-06-08T16:30:00Z",
-          messageCount: 18,
-          summary: "Debate about AI regulation and the role of government oversight.",
-        },
-      ],
-    }
+      id: topic.id,
+      title: topic.title,
+      stance: topic.stance,
+      anticipatedQuestions: formattedQuestions,
+      conversations: formattedConversations,
+    };
+  } catch (error) {
+    console.error(`Error fetching topic with ID ${id}:`, error);
+    return null;
   }
-
-  return null
 }
 
-// New functions for the public discussion interface
+// Public discussion interface functions
 
 export async function getPublicTopicById(id: string) {
-  // In a real app, you would fetch this from your database
-  if (id === "1") {
+  try {
+    const topic = await dbGetTopicById(id);
+    if (!topic) return null;
+    
+    // ユーザー情報を取得（実際の実装ではユーザープロフィールも取得）
+    const userId = topic.user_id;
+    
     return {
-      id: "1",
-      title: "Climate Change",
-      ownerName: "Alex Johnson",
-      ownerAvatar: "/placeholder.svg?height=48&width=48",
-    }
-  } else if (id === "2") {
-    return {
-      id: "2",
-      title: "AI Ethics",
-      ownerName: "Sam Taylor",
-      ownerAvatar: "/placeholder.svg?height=48&width=48",
-    }
+      id: topic.id,
+      title: topic.title,
+      ownerName: "Topic Owner", // 実際の実装ではユーザー名を取得
+      ownerAvatar: "/placeholder.svg?height=48&width=48", // 実際の実装ではアバター画像のURLを取得
+    };
+  } catch (error) {
+    console.error(`Error fetching public topic with ID ${id}:`, error);
+    return null;
   }
-
-  return null
 }
 
 export async function getTopicForDiscussion(id: string) {
-  // In a real app, you would fetch this from your database
-  if (id === "1") {
+  try {
+    const topic = await dbGetTopicById(id);
+    if (!topic) return null;
+    
+    // トピックに関連する想定質問を取得
+    const anticipatedQuestions = await getAnticipatedQuestionsByTopicId(id);
+    const formattedQuestions = anticipatedQuestions.map(q => ({
+      question: q.question,
+      response: q.response,
+    }));
+    
     return {
-      id: "1",
-      title: "Climate Change",
-      ownerName: "Alex Johnson",
-      stance: "We need immediate action to reduce carbon emissions and transition to renewable energy sources.",
-      anticipatedQuestions: [
-        {
-          question: "What about nuclear energy?",
-          response:
-            "I believe nuclear energy should be part of our transition strategy as it's low-carbon, but we need to address safety and waste concerns.",
-        },
-        {
-          question: "Is individual action enough?",
-          response:
-            "While individual actions matter, systemic change through policy is essential for meaningful impact.",
-        },
-        {
-          question: "What's your stance on carbon tax?",
-          response:
-            "I support a well-designed carbon tax that prices emissions appropriately while ensuring the burden doesn't fall disproportionately on lower-income households.",
-        },
-      ],
-    }
-  } else if (id === "2") {
-    return {
-      id: "2",
-      title: "AI Ethics",
-      ownerName: "Sam Taylor",
-      stance: "AI development should be regulated to ensure it benefits humanity and doesn't exacerbate inequality.",
-      anticipatedQuestions: [
-        {
-          question: "Should AI be regulated?",
-          response:
-            "Yes, I believe AI needs thoughtful regulation to ensure safety, fairness, and alignment with human values.",
-        },
-        {
-          question: "What about AI and jobs?",
-          response:
-            "We need policies to manage the transition, including education and social safety nets for those displaced by automation.",
-        },
-      ],
-    }
+      id: topic.id,
+      title: topic.title,
+      ownerName: "Topic Owner", // 実際の実装ではユーザー名を取得
+      stance: topic.stance,
+      anticipatedQuestions: formattedQuestions,
+    };
+  } catch (error) {
+    console.error(`Error fetching topic for discussion with ID ${id}:`, error);
+    return null;
   }
-
-  return null
 }
 
 export async function logNewPerspective(data: {
@@ -229,7 +236,18 @@ export async function logNewPerspective(data: {
   context: string
   aiResponse: string
 }) {
-  // In a real app, you would save this to your database
-  console.log("Logging new perspective:", data)
-  return { success: true }
+  try {
+    const perspective = new NewPerspective(
+      data.topicId,
+      data.question,
+      data.context,
+      data.aiResponse
+    );
+    
+    await createNewPerspective(perspective);
+    return { success: true };
+  } catch (error) {
+    console.error("Error logging new perspective:", error);
+    return { success: false, error: "Failed to log new perspective" };
+  }
 }

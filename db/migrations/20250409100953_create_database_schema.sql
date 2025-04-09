@@ -1,0 +1,63 @@
+-- migrate:up
+
+-- Users table
+CREATE TABLE users (
+    id VARCHAR(255) NOT NULL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Topics table (formerly agenda)
+CREATE TABLE topics (
+    id VARCHAR(255) NOT NULL PRIMARY KEY,
+    user_id VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    stance TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Anticipated Questions table (formerly knowledge)
+CREATE TABLE anticipated_questions (
+    id VARCHAR(255) NOT NULL PRIMARY KEY,
+    topic_id VARCHAR(255) NOT NULL,
+    question TEXT NOT NULL,
+    response TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (topic_id) REFERENCES topics(id) ON DELETE CASCADE
+);
+
+-- New Perspectives table (formerly curiosities)
+CREATE TABLE new_perspectives (
+    id VARCHAR(255) NOT NULL PRIMARY KEY,
+    topic_id VARCHAR(255) NOT NULL,
+    question TEXT NOT NULL,
+    context TEXT NOT NULL,
+    ai_response TEXT NOT NULL,
+    status VARCHAR(50) NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (topic_id) REFERENCES topics(id) ON DELETE CASCADE
+);
+
+-- Conversations table (new)
+CREATE TABLE conversations (
+    id VARCHAR(255) NOT NULL PRIMARY KEY,
+    topic_id VARCHAR(255) NOT NULL,
+    participant VARCHAR(255) NOT NULL,
+    summary TEXT,
+    message_count INT NOT NULL DEFAULT 0,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (topic_id) REFERENCES topics(id) ON DELETE CASCADE
+);
+
+-- migrate:down
+DROP TABLE IF EXISTS conversations;
+DROP TABLE IF EXISTS new_perspectives;
+DROP TABLE IF EXISTS anticipated_questions;
+DROP TABLE IF EXISTS topics;
+DROP TABLE IF EXISTS users;

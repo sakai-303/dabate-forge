@@ -6,9 +6,7 @@ services:
     container_name: debate_forge_mysql
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: debate_forge_development
-      MYSQL_USER: developer
-      MYSQL_PASSWORD:
+      MYSQL_DATABASE: debate_forge_develot
     ports:
       - "3306:3306"
     volumes:
