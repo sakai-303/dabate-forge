@@ -30,7 +30,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
-          <AuthButton />
+          <div className="p-4">
+            <AuthButton />
+          </div>
           {children}
         </AuthProvider>
       </body>

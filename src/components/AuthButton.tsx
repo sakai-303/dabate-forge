@@ -8,13 +8,13 @@ export function AuthButton() {
 
   if (session) {
     return (
-      <Button onClick={() => signOut()}>
+      <Button onClick={() => signOut()} className="ml-auto">
         Sign out
       </Button>
     );
   }
   return (
-    <Button onClick={() => signIn("github")}>
+    <Button onClick={() => signIn("google")} className="ml-auto">
       Sign in with Google
     </Button>
   );
