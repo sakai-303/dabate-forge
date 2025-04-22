@@ -1,7 +1,12 @@
+"use client";
+
 import { getPublicTopicById } from "@/lib/actions"
 import { PublicChatInterface } from "@/components/public-chat-interface"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 interface DiscussPageProps {
   params: {
@@ -10,6 +15,19 @@ interface DiscussPageProps {
 }
 
 export default async function DiscussPage({ params }: DiscussPageProps) {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!session) {
+      router.push("/");
+    }
+  }, [session, router]);
+
+  if (!session) {
+    return <div>Loading...</div>;
+  }
+
   // In a real application, you would fetch this data from your database
   const topic = await getPublicTopicById(params.id)
 
