@@ -15,7 +15,7 @@ export function AuthButton() {
   }
   return (
     <Button onClick={() => signIn("github")}>
-      Sign in with GitHub
+      Sign in with Google
     </Button>
   );
 }
