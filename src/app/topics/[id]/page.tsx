@@ -13,8 +13,11 @@ interface TopicPageProps {
 }
 
 export default async function TopicPage({ params }: TopicPageProps) {
-  // In a real application, you would fetch this data from your database
-  const topic = await getTopicById(params.id)
+  // paramsオブジェクト全体を非同期で処理
+  const { id: topicId } = await params;
+  
+  // 変数を使用してデータを取得
+  const topic = await getTopicById(topicId)
 
   if (!topic) {
     return <div>Topic not found</div>
@@ -25,8 +28,8 @@ export default async function TopicPage({ params }: TopicPageProps) {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">{topic.title}</h1>
         <div className="flex gap-2">
-          <ShareTopicButton topicId={params.id} topicTitle={topic.title} />
-          <Link href={`/topics/${params.id}/edit`}>
+          <ShareTopicButton topicId={topicId} topicTitle={topic.title} />
+          <Link href={`/topics/${topicId}/edit`}>
             <Button>Edit Topic</Button>
           </Link>
         </div>
@@ -55,7 +58,7 @@ export default async function TopicPage({ params }: TopicPageProps) {
               </div>
             ))}
 
-            <Link href={`/topics/${params.id}/edit`}>
+            <Link href={`/topics/${topicId}/edit`}>
               <Button variant="outline" className="mt-4">
                 Add More Questions
               </Button>
@@ -65,7 +68,7 @@ export default async function TopicPage({ params }: TopicPageProps) {
 
         <TabsContent value="simulation" className="mt-6">
           <Card>
-            <ChatInterface topicId={params.id} topicTitle={topic.title} />
+            <ChatInterface topicId={topicId} topicTitle={topic.title} />
           </Card>
         </TabsContent>
 
